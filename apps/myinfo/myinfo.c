@@ -19,6 +19,7 @@ void myinfo_main(void)
     {
         int button = button_get(true);
         lcd_putsf(10, 10, "Button: %d", button);
+        lcd_update();
 
         // if (button == BUTTON_POWER)
         //     break;
