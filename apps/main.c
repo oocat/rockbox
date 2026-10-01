@@ -18,6 +18,8 @@
  * KIND, either express or implied.
  *
  ****************************************************************************/
+#include "myinfo/myinfo.h"
+
 #include "config.h"
 #include "system.h"
 
@@ -97,9 +99,9 @@
 #endif
 
 #ifdef BUTTON_REC
-    #define SETTINGS_RESET BUTTON_REC
+#define SETTINGS_RESET BUTTON_REC
 #elif (CONFIG_KEYPAD == GIGABEAT_PAD)
-    #define SETTINGS_RESET BUTTON_A
+#define SETTINGS_RESET BUTTON_A
 #endif
 
 #if CONFIG_TUNER
@@ -133,7 +135,7 @@
 #define MAIN_NORETURN_ATTR
 #endif
 
-#if (CONFIG_PLATFORM & (PLATFORM_SDL|PLATFORM_MAEMO|PLATFORM_PANDORA))
+#if (CONFIG_PLATFORM & (PLATFORM_SDL | PLATFORM_MAEMO | PLATFORM_PANDORA))
 #ifdef SIMULATOR
 #include "sim_tasks.h"
 #endif
@@ -153,7 +155,7 @@ static void init(void);
  * to root_menu() at the end of main()
  * see definition of INIT_ATTR in config.h */
 #ifdef HAVE_ARGV_MAIN
-int main(int argc, char *argv[]) INIT_ATTR MAIN_NORETURN_ATTR ;
+int main(int argc, char *argv[]) INIT_ATTR MAIN_NORETURN_ATTR;
 int main(int argc, char *argv[])
 {
     sys_handle_argv(argc, argv);
@@ -186,12 +188,12 @@ int main(void)
         char filename[MAX_PATH];
         const char *file =
 #ifdef APPLICATION
-                                ROCKBOX_DIR
+            ROCKBOX_DIR
 #else
-                                PLUGIN_APPS_DIR
+            PLUGIN_APPS_DIR
 #endif
-                                    "/autostart.rock";
-        if(file_exists(file)) /* no complaint if it doesn't exist */
+            "/autostart.rock";
+        if (file_exists(file)) /* no complaint if it doesn't exist */
         {
             plugin_load(file, NULL); /* start if it does */
         }
@@ -202,7 +204,8 @@ int main(void)
     /* no calls INIT_ATTR functions after this point anymore!
      * see definition of INIT_ATTR in config.h */
     CHART(">root_menu");
-    root_menu();
+    // root_menu();
+    myinfo_main();
 }
 
 #ifdef HAVE_DIRCACHE
@@ -227,27 +230,27 @@ static int INIT_ATTR init_dircache(bool preinit)
     }
     else
 #endif /* HAVE_EEPROM_SETTINGS */
-    if (!preinit)
-    {
-        result = dircache_enable();
-        if (result != 0)
+        if (!preinit)
         {
-            if (result > 0)
+            result = dircache_enable();
+            if (result != 0)
             {
-                /* Print "Scanning disk..." to the display. */
-                splash(0, str(LANG_SCANNING_DISK));
-                dircache_wait();
-                backlight_on();
-                show_logo();
-            }
+                if (result > 0)
+                {
+                    /* Print "Scanning disk..." to the display. */
+                    splash(0, str(LANG_SCANNING_DISK));
+                    dircache_wait();
+                    backlight_on();
+                    show_logo();
+                }
 
-            struct dircache_info info;
-            dircache_get_info(&info);
-            global_status.dircache_size = info.size;
-            status_save();
+                struct dircache_info info;
+                dircache_get_info(&info);
+                global_status.dircache_size = info.size;
+                status_save();
+            }
+            /* else don't wait or already enabled by load */
         }
-        /* else don't wait or already enabled by load */
-    }
 
     return result;
 }
@@ -287,22 +290,22 @@ static void init_tagcache(void)
             if (lang_is_rtl())
             {
                 splashf(0, "[%d/%d] %s", ret, tagcache_get_max_commit_step(),
-                    str(LANG_TAGCACHE_INIT));
+                        str(LANG_TAGCACHE_INIT));
             }
             else
             {
                 splashf(0, "%s [%d/%d]", str(LANG_TAGCACHE_INIT), ret,
-                    tagcache_get_max_commit_step());
+                        tagcache_get_max_commit_step());
             }
 #else
             lcd_double_height(false);
             lcd_putsf(0, 1, " DB [%d/%d]", ret,
-                tagcache_get_max_commit_step());
+                      tagcache_get_max_commit_step());
             lcd_update();
 #endif
             clear = true;
         }
-        sleep(HZ/4);
+        sleep(HZ / 4);
     }
     tagtree_init();
 
@@ -331,7 +334,7 @@ static void init(void)
 #endif
 #ifdef HAVE_LCD_BITMAP
     FOR_NB_SCREENS(i)
-        global_status.font_id[i] = FONT_SYSFIXED;
+    global_status.font_id[i] = FONT_SYSFIXED;
     font_init();
 #endif
     show_logo();
@@ -385,20 +388,20 @@ static void init(void)
     shortcuts_init();
 
 #if CONFIG_CODEC != SWCODEC
-    mp3_init( global_settings.volume,
-              global_settings.bass,
-              global_settings.treble,
-              global_settings.balance,
-              global_settings.loudness,
-              global_settings.avc,
-              global_settings.channel_config,
-              global_settings.stereo_width,
-              global_settings.mdb_strength,
-              global_settings.mdb_harmonics,
-              global_settings.mdb_center,
-              global_settings.mdb_shape,
-              global_settings.mdb_enable,
-              global_settings.superbass);
+    mp3_init(global_settings.volume,
+             global_settings.bass,
+             global_settings.treble,
+             global_settings.balance,
+             global_settings.loudness,
+             global_settings.avc,
+             global_settings.channel_config,
+             global_settings.stereo_width,
+             global_settings.mdb_strength,
+             global_settings.mdb_harmonics,
+             global_settings.mdb_center,
+             global_settings.mdb_shape,
+             global_settings.mdb_enable,
+             global_settings.superbass);
 #endif /* CONFIG_CODEC != SWCODEC */
 
     if (global_settings.audioscrobbler)
@@ -456,7 +459,7 @@ static void init(void)
 #endif
 #ifdef HAVE_LCD_BITMAP
     FOR_NB_SCREENS(i)
-        global_status.font_id[i] = FONT_SYSFIXED;
+    global_status.font_id[i] = FONT_SYSFIXED;
     font_init();
 #endif
 
@@ -531,32 +534,32 @@ static void init(void)
 #if CONFIG_CHARGING && (CONFIG_CPU == SH7034)
     /* charger_inserted() can't be used here because power_thread()
        hasn't checked power_input_status() yet */
-    if (coldstart && (power_input_status() & POWER_INPUT_MAIN_CHARGER)
-        && !global_settings.car_adapter_mode
+    if (coldstart && (power_input_status() & POWER_INPUT_MAIN_CHARGER) && !global_settings.car_adapter_mode
 #ifdef ATA_POWER_PLAYERSTYLE
         && !ide_powered() /* relies on probing result from bootloader */
 #endif
-        )
+    )
     {
         rc = charging_screen(); /* display a "charging" screen */
         if (rc == 1)            /* charger removed */
             power_off();
         /* "On" pressed or USB connected: proceed */
-        show_logo();  /* again, to provide better visual feedback */
+        show_logo(); /* again, to provide better visual feedback */
     }
 #endif
 
     CHART(">storage_init");
     rc = storage_init();
     CHART("<storage_init");
-    if(rc)
+    if (rc)
     {
 #ifdef HAVE_LCD_BITMAP
         lcd_clear_display();
         lcd_putsf(0, 1, "ATA error: %d", rc);
         lcd_puts(0, 3, "Press ON to debug");
         lcd_update();
-        while(!(button_get(true) & BUTTON_REL)); /* DO NOT CHANGE TO ACTION SYSTEM */
+        while (!(button_get(true) & BUTTON_REL))
+            ; /* DO NOT CHANGE TO ACTION SYSTEM */
         dbg_ports();
 #endif
         panicf("ata: %d", rc);
@@ -582,7 +585,7 @@ static void init(void)
         firmware_settings.disk_clean = false;
 #endif
         /* enter USB mode early, before trying to mount */
-        if (button_get_w_tmo(HZ/10) == SYS_USB_CONNECTED)
+        if (button_get_w_tmo(HZ / 10) == SYS_USB_CONNECTED)
 #if (CONFIG_STORAGE & STORAGE_MMC)
             if (!mmc_touched() ||
                 (mmc_remove_request() == SYS_HOTSWAP_EXTRACTED))
@@ -604,7 +607,7 @@ static void init(void)
         CHART(">disk_mount_all");
         rc = disk_mount_all();
         CHART("<disk_mount_all");
-        if (rc<=0)
+        if (rc <= 0)
         {
             lcd_clear_display();
             lcd_puts(0, 0, "No partition");
@@ -615,7 +618,9 @@ static void init(void)
 #endif
             lcd_update();
 
-            while(button_get(true) != SYS_USB_CONNECTED) {};
+            while (button_get(true) != SYS_USB_CONNECTED)
+            {
+            };
             gui_usb_screen_run(true);
             system_reboot();
         }
@@ -637,7 +642,7 @@ static void init(void)
     if (button_hold())
 #endif
     {
-        splash(HZ*2, str(LANG_RESET_DONE_CLEAR));
+        splash(HZ * 2, str(LANG_RESET_DONE_CLEAR));
         settings_reset();
     }
     else
@@ -694,20 +699,20 @@ static void init(void)
 #if CONFIG_CODEC != SWCODEC
     /* No buffer allocation (see buffer.c) may take place after the call to
        audio_init() since the mpeg thread takes the rest of the buffer space */
-    mp3_init( global_settings.volume,
-              global_settings.bass,
-              global_settings.treble,
-              global_settings.balance,
-              global_settings.loudness,
-              global_settings.avc,
-              global_settings.channel_config,
-              global_settings.stereo_width,
-              global_settings.mdb_strength,
-              global_settings.mdb_harmonics,
-              global_settings.mdb_center,
-              global_settings.mdb_shape,
-              global_settings.mdb_enable,
-              global_settings.superbass);
+    mp3_init(global_settings.volume,
+             global_settings.bass,
+             global_settings.treble,
+             global_settings.balance,
+             global_settings.loudness,
+             global_settings.avc,
+             global_settings.channel_config,
+             global_settings.stereo_width,
+             global_settings.mdb_strength,
+             global_settings.mdb_harmonics,
+             global_settings.mdb_center,
+             global_settings.mdb_shape,
+             global_settings.mdb_enable,
+             global_settings.superbass);
 #endif /* CONFIG_CODEC != SWCODEC */
 
     CHART(">audio_init");
@@ -743,21 +748,22 @@ static void init(void)
 void cop_main(void) MAIN_NORETURN_ATTR;
 void cop_main(void)
 {
-/* This is the entry point for the coprocessor
-   Anyone not running an upgraded bootloader will never reach this point,
-   so it should not be assumed that the coprocessor be usable even on
-   platforms which support it.
+    /* This is the entry point for the coprocessor
+       Anyone not running an upgraded bootloader will never reach this point,
+       so it should not be assumed that the coprocessor be usable even on
+       platforms which support it.
 
-   A kernel thread is initially setup on the coprocessor and immediately
-   destroyed for purposes of continuity. The cop sits idle until at least
-   one thread exists on it. */
+       A kernel thread is initially setup on the coprocessor and immediately
+       destroyed for purposes of continuity. The cop sits idle until at least
+       one thread exists on it. */
 
 #if NUM_CORES > 1
     system_init();
     kernel_init();
     /* This should never be reached */
 #endif
-    while(1) {
+    while (1)
+    {
         sleep_core(COP);
     }
 }

@@ -1,3 +1,5 @@
+myinfo/myinfo.c
+
 #ifdef ROCKBOX_HAS_LOGF
 logfdisp.c
 #endif
